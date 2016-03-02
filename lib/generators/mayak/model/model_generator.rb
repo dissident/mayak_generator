@@ -67,7 +67,85 @@ module Mayak
       end
 
       def create_admin_interface
+        @permit_params = permit_params_string
+        @form_inputs = form_inputs_string
+        @index_columns = index_columns_string
+        @view_rows = view_rows_string
         template "active_admin_resource.rb", "app/admin/#{@name.underscore}.rb"
+      end
+
+      def form_inputs_string
+        @attributes.map do |attribute|
+          case attribute.type
+            when :image
+              "f.input :#{attribute.name}, hint:
+              \t[ \"Изображение будет уменьшено до размеров 280 на 150 пикселей, если оно большего размера.\",
+              \t\tf.object.#{attribute.name}? ?
+              \t\t\t\"<br>Текущее изображение:<br>\#{image_tag(f.object.#{attribute.name}.thumb.url)}\" : \"\"
+              \t].join.html_safe
+              f.input :#{attribute.name}_cache, as: :hidden
+              f.input :remove_#{attribute.name}, as: :boolean
+              "
+            when :text
+              "f.input :#{attribute.name}, input_html: { class: 'editor',
+              \t\t'data-type' => f.object.class.name,
+              \t\t'data-id' => f.object.id }
+              "
+            else
+              "f.input :#{attribute.name}
+              "
+          end
+        end.join("")
+      end
+
+      def index_columns_string
+        @attributes.map do |attribute|
+          case attribute.type
+            when :image
+              "column :#{attribute.name} do |#{ @name.underscore }|
+              \t\timage_tag #{@name.underscore}.#{attribute.name}.thumb.url
+              end
+              "
+            else
+              "column :#{attribute.name}
+              "
+          end
+        end.join("")
+      end
+
+      def view_rows_string
+        @attributes.map do |attribute|
+          case attribute.type
+            when :image
+              "row :#{attribute.name} do
+              \timage_tag(#{@name.underscore}.#{attribute.name}.url) unless #{@name.underscore}.#{attribute.name}.blank?
+              end
+              "
+            when :text
+              "row(:#{attribute.name}) { raw #{@name.underscore}.#{attribute.name} }
+              "
+            else
+              "row :#{attribute.name}
+              "
+          end
+        end.join("")
+      end
+
+      def permit_params_string
+        arrays = []
+        @attributes.map do |attribute|
+          case attribute.type
+            when :has_many
+              arrays << "#{attribute.name}_ids:[]"
+              ""
+            when :belongs_to
+              ":#{attribute.name}_id"
+            when :image
+              ":#{attribute.name}, :#{attribute.name}_cache, :remove_#{attribute.name}"
+            else
+              ":#{attribute.name}"
+          end
+        end.concat(arrays).join(", ")
       end
     end
 end

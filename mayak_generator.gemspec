@@ -7,7 +7,7 @@ require "mayak_generator/version"
 Gem::Specification.new do |s|
   s.name        = "mayak_generator"
   s.version     = MayakGenerator::VERSION
-  s.authors     = ["graveman666"]
+  s.authors     = ["dissident"]
   s.email       = ["chereshkevichsv@gmail.com"]
   s.homepage    = "http://google.com"
   s.summary     = "Geneartor for Mayak"
