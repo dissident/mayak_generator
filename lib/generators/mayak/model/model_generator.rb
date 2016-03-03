@@ -12,6 +12,7 @@ module Mayak
           puts "ERROR: model #{ @name.camelize } already exist"
           return
         end
+        @seo_check = false
         rails_attributes, mayak_attributes = process_attributes(attributes)
         generate :model, model_string(@name.camelize, rails_attributes)
         mayak_process mayak_attributes
@@ -38,6 +39,13 @@ module Mayak
               mayak_attributes << attribute
             when :text
               rails_attributes << attribute
+            when :seo
+              mayak_attributes << attribute
+              rails_attribute = attribute.dup
+              rails_attribute.type = :string
+              rails_attribute.name = 'seodata'
+              rails_attributes << rails_attribute
+              @seo_check = true
           end
         end
         [rails_attributes, mayak_attributes]
@@ -52,6 +60,8 @@ module Mayak
               inject_into_class "app/models/#{@name.underscore}.rb", @name.camelize, "  mount_uploader :#{attribute.name.underscore}, #{@image.camelize}\n"
             when :has_many
               inject_into_class "app/models/#{@name.underscore}.rb", @name.camelize, "  has_many :#{attribute.name}, inverse_of: :#{@name.underscore}\n"
+            when :seo
+              inject_into_class "app/models/#{@name.underscore}.rb", @name.camelize, "  acts_as_seo_carrier\n"
           end
         end
       end
@@ -71,6 +81,8 @@ module Mayak
         @form_inputs = form_inputs_string
         @index_columns = index_columns_string
         @view_rows = view_rows_string
+        @seo_form = "Seo::FormtasticSeoFieldset::build f" if @seo_check
+        @seo_view = "seo_panel_for #{@name.underscore}" if @seo_check
         template "active_admin_resource.rb", "app/admin/#{@name.underscore}.rb"
       end
 
@@ -79,18 +91,20 @@ module Mayak
           case attribute.type
             when :image
               "f.input :#{attribute.name}, hint:
-              \t[ \"Изображение будет уменьшено до размеров 280 на 150 пикселей, если оно большего размера.\",
-              \t\tf.object.#{attribute.name}? ?
-              \t\t\t\"<br>Текущее изображение:<br>\#{image_tag(f.object.#{attribute.name}.thumb.url)}\" : \"\"
-              \t].join.html_safe
+                [ \"Изображение будет уменьшено до размеров 280 на 150 пикселей, если оно большего размера.\",
+                  f.object.#{attribute.name}? ?
+                    \"<br>Текущее изображение:<br>\#{image_tag(f.object.#{attribute.name}.thumb.url)}\" : \"\"
+                ].join.html_safe
               f.input :#{attribute.name}_cache, as: :hidden
               f.input :remove_#{attribute.name}, as: :boolean
               "
             when :text
               "f.input :#{attribute.name}, input_html: { class: 'editor',
-              \t\t'data-type' => f.object.class.name,
-              \t\t'data-id' => f.object.id }
+                  'data-type' => f.object.class.name,
+                  'data-id' => f.object.id }
               "
+            when :seo
+              ""
             else
               "f.input :#{attribute.name}
               "
@@ -103,9 +117,11 @@ module Mayak
           case attribute.type
             when :image
               "column :#{attribute.name} do |#{ @name.underscore }|
-              \t\timage_tag #{@name.underscore}.#{attribute.name}.thumb.url
+                  image_tag #{@name.underscore}.#{attribute.name}.thumb.url
               end
               "
+            when :seo
+              ""
             else
               "column :#{attribute.name}
               "
@@ -118,12 +134,14 @@ module Mayak
           case attribute.type
             when :image
               "row :#{attribute.name} do
-              \timage_tag(#{@name.underscore}.#{attribute.name}.url) unless #{@name.underscore}.#{attribute.name}.blank?
+                image_tag(#{@name.underscore}.#{attribute.name}.url) unless #{@name.underscore}.#{attribute.name}.blank?
               end
               "
             when :text
               "row(:#{attribute.name}) { raw #{@name.underscore}.#{attribute.name} }
               "
+            when :seo
+              ""
             else
               "row :#{attribute.name}
               "
@@ -132,6 +150,7 @@ module Mayak
       end
 
       def permit_params_string
+        seo_params = @seo_check ? [":no_title_postfix", ":seo_title", ":seo_descr", ":seo_keywords"] : []
         arrays = []
         @attributes.map do |attribute|
           case attribute.type
@@ -145,7 +164,7 @@ module Mayak
             else
               ":#{attribute.name}"
           end
-        end.concat(arrays).join(", ")
+        end.concat(seo_params).concat(arrays).join(", ")
       end
     end
 end

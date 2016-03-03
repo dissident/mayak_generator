@@ -17,6 +17,9 @@ ActiveAdmin.register <%= @name.camelize %> do
     attributes_table do
       <%= @view_rows %>
     end
+
+    <%= @seo_check ? @seo_view : "" %>
+
   end
 
   ## FORM
@@ -25,5 +28,9 @@ ActiveAdmin.register <%= @name.camelize %> do
     f.inputs '' do
       <%= @form_inputs %>
     end
+
+    <%= @seo_check ? @seo_form : "" %>
+
+    f.actions
   end
 end
