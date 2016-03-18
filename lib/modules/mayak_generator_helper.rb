@@ -9,7 +9,7 @@ module Mayak
     end
 
     def model_file_exist?(name)
-      File.exist? "app/models/#{name.underscore}"
+      File.exist? "app/models/#{name.underscore}.rb"
     end
 
   end
