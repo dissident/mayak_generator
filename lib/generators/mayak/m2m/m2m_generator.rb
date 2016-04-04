@@ -15,11 +15,11 @@ module Mayak
         return
       end
       first_model, second_model = ARGV.sort
-      unless model_exist?(first_model.camelize)
+      unless model_exist?(first_model)
         puts "model #{ first_model.camelize} not exist!"
         return
       end
-      unless model_exist?(second_model.camelize)
+      unless model_exist?(second_model)
         puts "model #{ second_model.camelize} not exist!"
         return
       end
