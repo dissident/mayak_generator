@@ -1,4 +1,5 @@
 require "#{MayakGenerator::Engine.root}/lib/modules/mayak_generator_helper"
+require "#{MayakGenerator::Engine.root}/lib/modules/admin_fields"
 
 module Mayak
   class AdminOnlyGenerator < Rails::Generators::NamedBase
@@ -7,6 +8,7 @@ module Mayak
     argument :attributes, type: :array, default: [], banner: "field[:type][:index] field[:type][:index]"
 
     include Mayak::GeneratorHelper
+    include Mayak::AdminFields
 
     desc "Use for generate custom mayak admin interface"
 
@@ -31,25 +33,14 @@ module Mayak
       @attributes.map do |attribute|
         case attribute.type
           when :image
-            "f.input :#{attribute.name}, hint:
-              [ \"Изображение будет уменьшено до размеров 280 на 150 пикселей, если оно большего размера.\",
-                f.object.#{attribute.name}? ?
-                  \"<br>Текущее изображение:<br>\#{image_tag(f.object.#{attribute.name}.thumb.url)}\" : \"\"
-              ].join.html_safe
-            f.input :#{attribute.name}_cache, as: :hidden
-            f.input :remove_#{attribute.name}, as: :boolean
-            "
+            form_image_field(attribute)
           when :text
-            "f.input :#{attribute.name}, input_html: { class: 'editor',
-                'data-type' => f.object.class.name,
-                'data-id' => f.object.id }
-            "
+            form_text_field(attribute)
           when :seo
             @seo_check = true
             ""
           else
-            "f.input :#{attribute.name}
-            "
+            form_string_field(attribute)
         end
       end.join("")
     end
@@ -106,7 +97,7 @@ module Mayak
           else
             ":#{attribute.name}"
         end
-      end.concat(seo_params).concat(arrays).join(", ")
+      end.concat(seo_params).concat(arrays).reject { |c| c.empty? }.join(", ")
     end
 
   end
