@@ -15,6 +15,7 @@ add this code to your Gemfile
 ``` ruby
 rails g mayak:model_only Product name body:text preview:image
 rails g mayak:admin_only Product name body:text preview:image
+rails g mayak:m2m product category
 ```
 
 available fields:
