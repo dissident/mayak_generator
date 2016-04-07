@@ -27,19 +27,13 @@ module Mayak
       mayak_attributes = []
       attributes.each do |attribute|
         case attribute.type
-          when :string
-            rails_attributes << attribute
           when :image
             mayak_attributes << attribute
             rails_attribute = attribute.dup
             rails_attribute.type = :string
             rails_attributes << rails_attribute
-          when :belongs_to
-            rails_attributes << attribute
           when :has_many
             mayak_attributes << attribute
-          when :text
-            rails_attributes << attribute
           when :seo
             mayak_attributes << attribute
             rails_attribute = attribute.dup
@@ -47,6 +41,8 @@ module Mayak
             rails_attribute.name = 'seodata'
             rails_attributes << rails_attribute
             @seo_check = true
+          else
+            rails_attributes << attribute
         end
       end
       [rails_attributes, mayak_attributes]
