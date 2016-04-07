@@ -7,7 +7,7 @@ MayakGenerator - set of custom generators fot ruby on rails template
 
 add this code to your Gemfile
 ``` ruby
-'gem "mayak_generator", git: "git@github.com:dissident/mayak_generator.git"'
+gem "mayak_generator", git: "git@github.com:dissident/mayak_generator.git"
 ```
 
 #### How to use
