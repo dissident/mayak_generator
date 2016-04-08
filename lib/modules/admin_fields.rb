@@ -24,5 +24,35 @@ module Mayak
       "f.input :#{attribute.name}
       "
     end
+
+    def view_image_row(attribute, name)
+      "row :#{attribute.name} do
+        image_tag(#{name.underscore}.#{attribute.name}.url) unless #{name.underscore}.#{attribute.name}.blank?
+      end
+      "
+    end
+
+    def view_text_row(attribute, name)
+      "row(:#{attribute.name}) { raw #{name.underscore}.#{attribute.name} }
+      "
+    end
+
+    def view_string_field(attribute)
+      "row :#{attribute.name}
+      "
+    end
+
+    def index_image_column(attribute, name)
+      "column :#{attribute.name} do |#{ name.underscore }|
+        image_tag #{name.underscore}.#{attribute.name}.thumb.url
+      end
+      "
+    end
+
+    def index_string_column(attribute)
+      "column :#{attribute.name}
+      "
+    end
+
   end
 end

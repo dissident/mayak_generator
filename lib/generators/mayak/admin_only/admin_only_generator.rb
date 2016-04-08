@@ -49,15 +49,11 @@ module Mayak
       @attributes.map do |attribute|
         case attribute.type
           when :image
-            "column :#{attribute.name} do |#{ @name.underscore }|
-                image_tag #{@name.underscore}.#{attribute.name}.thumb.url
-            end
-            "
+            index_image_column(attribute, @name)
           when :seo
             ""
           else
-            "column :#{attribute.name}
-            "
+            index_string_column(attribute)
         end
       end.join("")
     end
@@ -66,18 +62,13 @@ module Mayak
       @attributes.map do |attribute|
         case attribute.type
           when :image
-            "row :#{attribute.name} do
-              image_tag(#{@name.underscore}.#{attribute.name}.url) unless #{@name.underscore}.#{attribute.name}.blank?
-            end
-            "
+            view_image_row(attribute, @name)
           when :text
-            "row(:#{attribute.name}) { raw #{@name.underscore}.#{attribute.name} }
-            "
+            view_text_row(attribute, @name)
           when :seo
             ""
           else
-            "row :#{attribute.name}
-            "
+            view_string_field(attribute)
         end
       end.join("")
     end
