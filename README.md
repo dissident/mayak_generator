@@ -28,6 +28,13 @@ available fields:
 - has_many
 - seo
 
+#### how to reset changes by git
+
+``` ruby
+git reset --hard
+git clean -f -d
+```
+
 #### how to contribute (specialy for Pablo Escobar)
 
 - fork this repository
