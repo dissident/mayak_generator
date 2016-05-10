@@ -2,7 +2,7 @@ require "#{MayakGenerator::Engine.root}/lib/modules/mayak_generator_helper"
 require "#{MayakGenerator::Engine.root}/lib/modules/admin_fields"
 
 module Mayak
-  class AdminOnlyGenerator < Rails::Generators::NamedBase
+  class AdminGenerator < Rails::Generators::NamedBase
 
     source_root File.expand_path('../templates', __FILE__)
     argument :attributes, type: :array, default: [], banner: "field[:type][:index] field[:type][:index]"

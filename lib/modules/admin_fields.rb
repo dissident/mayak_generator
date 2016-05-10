@@ -3,7 +3,7 @@ module Mayak
   module AdminFields
 
     def form_image_field(attribute)
-"f.input :#{attribute.name}, hint:
+      "f.input :#{attribute.name}, hint:
         [ \"Изображение будет уменьшено до размеров 280 на 150 пикселей, если оно большего размера.\",
           f.object.#{attribute.name}? ?
             \"<br>Текущее изображение:<br>\#{image_tag(f.object.#{attribute.name}.thumb.url)}\" : \"\"

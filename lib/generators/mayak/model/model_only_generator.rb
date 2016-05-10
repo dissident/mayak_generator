@@ -1,7 +1,7 @@
 require "#{MayakGenerator::Engine.root}/lib/modules/mayak_generator_helper"
 
 module Mayak
-  class ModelOnlyGenerator < Rails::Generators::NamedBase
+  class ModelGenerator < Rails::Generators::NamedBase
 
     source_root File.expand_path('../templates', __FILE__)
     argument :attributes, type: :array, default: [], banner: "field[:type][:index] field[:type][:index]"

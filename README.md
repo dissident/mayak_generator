@@ -8,14 +8,14 @@ MayakGenerator - set of custom generators fot ruby on rails template
 add this code to your Gemfile
 
 ``` ruby
-gem "mayak_generator", git: "git@github.com:dissident/mayak_generator.git"
+gem "mayak_generator", github: "dissident/mayak_generator"
 ```
 
 #### How to use
 
 ``` ruby
-rails g mayak:model_only Product name body:text preview:image
-rails g mayak:admin_only Product name body:text preview:image
+rails g mayak:model Product name body:text preview:image
+rails g mayak:admin Product name body:text preview:image
 rails g mayak:m2m product category
 ```
 
