@@ -9,7 +9,6 @@ class News < ActiveRecord::Base
   validates :slug, uniqueness: true
 
   after_initialize :set_defaults
-  before_validation :prepare_slug
 
   scope :visibles, -> { where("news.published_at < ?", Time.now).
                         where(hided: false) }
@@ -23,10 +22,6 @@ class News < ActiveRecord::Base
 
   def set_defaults
     self.published_at = Time.now if self.published_at.nil?
-  end
-
-  def prepare_slug
-    self.slug = UrlStringPreparator.slug self.slug, self.title
   end
 
 end

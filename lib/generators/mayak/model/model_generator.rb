@@ -1,4 +1,5 @@
 require "#{MayakGenerator::Engine.root}/lib/modules/mayak_generator_helper"
+require "#{MayakGenerator::Engine.root}/lib/modules/model_fields"
 
 module Mayak
   class ModelGenerator < Rails::Generators::NamedBase
@@ -7,6 +8,7 @@ module Mayak
     argument :attributes, type: :array, default: [], banner: "field[:type][:index] field[:type][:index]"
 
     include Mayak::GeneratorHelper
+    include Mayak::ModelFields
 
     desc "Use for generate custom mayak admin interface"
 
@@ -41,6 +43,12 @@ module Mayak
             rails_attribute.name = 'seodata'
             rails_attributes << rails_attribute
             @seo_check = true
+          when :slug
+            mayak_attributes << attribute
+            rails_attribute = attribute.dup
+            rails_attribute.type = :string
+            rails_attribute.name = 'slug'
+            rails_attributes << rails_attribute
           else
             rails_attributes << attribute
         end
@@ -59,6 +67,8 @@ module Mayak
             inject_into_class "app/models/#{@name.underscore}.rb", @name.camelize, "  has_many :#{attribute.name}, inverse_of: :#{@name.underscore}\n"
           when :seo
             inject_into_class "app/models/#{@name.underscore}.rb", @name.camelize, "  acts_as_seo_carrier\n"
+          when :slug
+            insert_private_method "app/models/#{@name.underscore}.rb", prepare_slug_private_method
         end
       end
     end

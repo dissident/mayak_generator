@@ -22,8 +22,35 @@ module Mayak
       File.readlines(file).select { |string| string.include?("acts_as_") }.size > 0
     end
 
-    def insert_slug(file)
+    def has_method?(file, method)
+      File.readlines(file).select { |string| string.include?("def #{method}") }.size > 0
+    end
 
+    def insert_private_method(file, method)
+      if has_private?(file)
+        insert_into_file_after file, method, "  private\n"
+      else
+        insert_into_file_before file, "  private\n", "end\n"
+        insert_into_file_after file, method, "  private\n"
+      end
+    end
+
+    def insert_filter(file, filter)
+
+    end
+
+    private
+
+    def insert_into_file_after(filepath, insertion_text, condition)
+      regexp = Regexp.new condition
+      content = File.read(filepath).sub(regexp, "#{condition} \n#{insertion_text}")
+      File.open(filepath, 'wb') { |file| file.write(content) }
+    end
+
+    def insert_into_file_before(filepath, insertion_text, condition)
+      regexp = Regexp.new condition
+      content = File.read(filepath).sub(regexp, "#{insertion_text} \n#{condition}")
+      File.open(filepath, 'wb') { |file| file.write(content) }
     end
 
   end
