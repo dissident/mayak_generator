@@ -51,7 +51,7 @@ module Mayak
       if has_scopes?(file)
         insert_into_file_before(file, filter, find_first_string_by_regex(file, /scope\ /))
       else
-        insert_into_file_after(file, filter, find_last_string_by_regex(file, /$class/))
+        insert_into_file_after(file, filter, find_last_string_by_regex(file, /^class/))
       end
     end
 

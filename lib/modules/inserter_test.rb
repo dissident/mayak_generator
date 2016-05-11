@@ -103,4 +103,9 @@ class IserterTest < Minitest::Test
     assert_equal find_last_string_by_regex(@dublicate_file_news, /before\_validation\ \:prepare\_slug/), "  before_validation :prepare_slug\n"
   end
 
+  def test_insert_filter_to_admin_user
+    insert_filter(@dublicate_file_admin_user, slug_before_metod)
+    assert_equal find_last_string_by_regex(@dublicate_file_admin_user, /before\_validation\ \:prepare\_slug/), "  before_validation :prepare_slug\n"
+  end
+
 end

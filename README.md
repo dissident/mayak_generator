@@ -35,8 +35,7 @@ If you do not got what he wanted, after generation, most effective
  variant - git reset all your changes.
 
 ``` ruby
-git reset --hard
-git clean -f -d
+git reset --hard && git clean -f -d
 ```
 
 #### how to contribute (specialy for Pablo Escobar)
