@@ -27,6 +27,7 @@ available fields:
 - belongs_to
 - has_many
 - seo
+- slug
 
 #### how to reset changes by git
 
