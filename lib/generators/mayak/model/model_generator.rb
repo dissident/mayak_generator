@@ -8,6 +8,7 @@ module Mayak
     argument :attributes, type: :array, default: [], banner: "field[:type][:index] field[:type][:index]"
 
     include Mayak::GeneratorHelper
+    include Mayak::Inserter
     include Mayak::ModelFields
 
     desc "Use for generate custom mayak admin interface"
