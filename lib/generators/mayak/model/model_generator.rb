@@ -1,5 +1,6 @@
 require "#{MayakGenerator::Engine.root}/lib/modules/mayak_generator_helper"
 require "#{MayakGenerator::Engine.root}/lib/modules/model_fields"
+require "#{MayakGenerator::Engine.root}/lib/modules/inserter"
 
 module Mayak
   class ModelGenerator < Rails::Generators::NamedBase
