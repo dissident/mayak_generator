@@ -69,6 +69,7 @@ module Mayak
             inject_into_class "app/models/#{@name.underscore}.rb", @name.camelize, "  acts_as_seo_carrier\n"
           when :slug
             insert_private_method "app/models/#{@name.underscore}.rb", prepare_slug_private_method
+            insert_filter "app/models/#{@name.underscore}.rb", slug_before_metod
         end
       end
     end

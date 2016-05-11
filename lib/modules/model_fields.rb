@@ -10,7 +10,7 @@ module Mayak
     end
 
     def slug_before_metod
-      "before_validation :prepare_slug
+      "  before_validation :prepare_slug
       "
     end
   end

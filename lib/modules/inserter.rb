@@ -26,6 +26,18 @@ module Mayak
       File.readlines(file).select { |string| string.include?("def #{method}") }.size > 0
     end
 
+    def find_last_string_by_regex(file, regex)
+      result = nil
+      File.readlines(file).each { |string| result = string if ((string =~ regex) != nil) }
+      result
+    end
+
+    def find_first_string_by_regex(file, regex)
+      result = nil
+      File.readlines(file).each { |string| result = string if (((string =~ regex) != nil) && result == nil) }
+      result
+    end
+
     def insert_private_method(file, method)
       if has_private?(file)
         insert_into_file_after file, method, "  private\n"
@@ -36,19 +48,23 @@ module Mayak
     end
 
     def insert_filter(file, filter)
-
+      if has_uploaders?(file)
+        insert_into_file_before(file, filter, find_first_string_by_regex(file, /scope\ /))
+      else
+        insert_into_file_after(file, filter, find_last_string_by_regex(file, /$class/))
+      end
     end
 
     private
 
     def insert_into_file_after(filepath, insertion_text, condition)
-      regexp = Regexp.new condition
+      regexp = Regexp.new Regexp.quote(condition)
       content = File.read(filepath).sub(regexp, "#{condition} \n#{insertion_text}")
       File.open(filepath, 'wb') { |file| file.write(content) }
     end
 
     def insert_into_file_before(filepath, insertion_text, condition)
-      regexp = Regexp.new condition
+      regexp = Regexp.new Regexp.quote(condition)
       content = File.read(filepath).sub(regexp, "#{insertion_text} \n#{condition}")
       File.open(filepath, 'wb') { |file| file.write(content) }
     end

@@ -88,4 +88,19 @@ class IserterTest < Minitest::Test
     assert_equal result, { was: false, now: true }
   end
 
+  def test_find_string_by_regex_news
+    regex = /acts_as_/
+    assert_equal find_last_string_by_regex(@news_file, regex), "  acts_as_static_files_holder\n"
+  end
+
+  def test_find_string_by_regex_admin_user
+    regex = /acts_as_/
+    assert_equal find_last_string_by_regex(@admin_user_file, regex), nil
+  end
+
+  def test_insert_filter_to_news
+    insert_filter(@dublicate_file_news, slug_before_metod)
+    assert_equal find_last_string_by_regex(@dublicate_file_news, /before\_validation\ \:prepare\_slug/), "  before_validation :prepare_slug\n"
+  end
+
 end
