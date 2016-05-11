@@ -48,7 +48,7 @@ module Mayak
     end
 
     def insert_filter(file, filter)
-      if has_uploaders?(file)
+      if has_scopes?(file)
         insert_into_file_before(file, filter, find_first_string_by_regex(file, /scope\ /))
       else
         insert_into_file_after(file, filter, find_last_string_by_regex(file, /$class/))
